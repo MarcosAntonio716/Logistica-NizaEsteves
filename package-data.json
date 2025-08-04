@@ -1,0 +1,9 @@
+{
+  "name": "Caixa P - Camisetas",
+  "weight": 0.550,
+  "dimensions": {
+    "height": 4,
+    "width": 30,
+    "length": 30
+  }
+}

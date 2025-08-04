@@ -1,0 +1,12 @@
+{
+  "fullName": "Ana Souza",
+  "email": "ana.souza@email.com",
+  "address": {
+    "street": "Avenida Brasil",
+    "number": "1500",
+    "bairro": "Zona 01",
+    "city": "Maringá",
+    "state": "PR",
+    "postalCode": "87013-000"
+  }
+}
