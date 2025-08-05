@@ -1,4 +1,5 @@
 // src/controllers/freightController.js
+
 const axios = require('axios');
 
 // --- Bloco de Cache para o Token dos Correios ---
@@ -20,16 +21,16 @@ const getCorreiosToken = async () => {
 
     try {
         const response = await axios.post(
-            'https://api.correios.com.br/token/v1/autentica/contrato',
-            { numero: process.env.CORREIOS_CONTRATO },
+            'https://api.correios.com.br/token/v1/autentica/cartaopostagem',
+            { numero: process.env.CORREIOS_CARTAO_POSTAGEM },
             {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Basic ${credentials}`
                 }
             }
-        );
-        
+         );
+
         const tokenData = response.data;
         const issueDate = new Date(tokenData.issue);
         const expirationDate = new Date(issueDate.getTime() + (parseInt(tokenData.expiraEm) - 300000));
@@ -38,16 +39,15 @@ const getCorreiosToken = async () => {
             token: tokenData.token,
             expiresAt: expirationDate,
         };
-        
-        console.log('Novo token dos Correios gerado com sucesso.');
+
+        console.log('✅ Novo token dos Correios (via Cartão) gerado com sucesso.');
         return correiosTokenCache.token;
 
     } catch (error) {
-        console.error("ERRO GRAVE ao gerar token dos Correios:", error.response ? (error.response.data.msgs || error.response.data) : error.message);
+        console.error("❌ ERRO ao gerar token dos Correios:", error.response ? error.response.data : error.message);
         throw new Error('Falha na autenticação com os Correios.');
     }
 };
-
 
 // --- FUNÇÃO PARA CHAMAR A API DO MELHOR ENVIO ---
 const fetchMelhorEnvioQuotes = (payload) => {
@@ -62,53 +62,85 @@ const fetchMelhorEnvioQuotes = (payload) => {
                 'User-Agent': 'App Niza Esteves Logistica',
             },
         }
-    );
+     );
 };
 
 // --- FUNÇÃO PARA CHAMAR A API DE PREÇOS DOS CORREIOS ---
 const fetchCorreiosQuotes = async (payload) => {
     const token = await getCorreiosToken();
-    
-    const correiosPayload = {
-        "idLote": "1",
-        "nuContrato": process.env.CORREIOS_CONTRATO,
-        "nuCartaoPostagem": process.env.CORREIOS_CARTAO_POSTAGEM, // Usa o cartão de postagem
-        "coProduto": "03220,03298",
-        "nuCepOrigem": payload.from.postal_code.replace(/\D/g, ''),
-        "nuCepDestino": payload.to.postal_code.replace(/\D/g, ''),
-        "psObjeto": payload.package.weight.toString(),
-        "tpObjeto": "2",
-        "comprimento": payload.package.length.toString(),
-        "largura": payload.package.width.toString(),
-        "altura": payload.package.height.toString(),
-    };
+
+    console.log("📦 Payload recebido no backend:", JSON.stringify(payload, null, 2));
+
+    if (
+        !payload.package ||
+        !payload.package.weight ||
+        !payload.package.length ||
+        !payload.package.width ||
+        !payload.package.height
+    ) {
+        throw new Error("❌ Dados do pacote incompletos ou inválidos.");
+    }
+
+    const produtos = ["03220", "03298"]; // SEDEX e PAC
+
+    const lote = produtos.map((produto) => ({
+        // idLote foi removido, pois não é usado pela API de Preços
+        coProduto: produto,
+        nuCepOrigem: payload.from.postal_code.replace(/\D/g, ''),
+        nuCepDestino: payload.to.postal_code.replace(/\D/g, ''),
+        psObjeto: Math.round(payload.package.weight * 1000), // Enviado como number
+        tpObjeto: "2", // Pacote/Caixa
+        comprimento: payload.package.length, // Enviado como number
+        largura: payload.package.width,     // Enviado como number
+        altura: payload.package.height,       // Enviado como number
+    }));
+
+    console.log("📤 Corpo enviado para os Correios:", JSON.stringify(lote, null, 2));
 
     const response = await axios.post(
         'https://api.correios.com.br/preco/v1/nacional',
-        [correiosPayload], // A API espera uma lista
+        lote,
         {
             headers: {
+                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             }
         }
-    );
+     );
 
-    return response.data.map(servico => ({
-        id: servico.coProduto,
-        name: servico.coProduto === '03220' ? 'PAC Contrato' : 'SEDEX Contrato',
-        price: servico.pcFinal.replace(',', '.'),
-        delivery_time: servico.prazoEntrega,
-        company: { name: 'Correios (Contrato)', picture: 'https://www.melhorenvio.com.br/images/shipping-companies/correios.png' }
-    }));
+    console.log("✅ Resposta Correios:", JSON.stringify(response.data, null, 2));
+
+    // A resposta da API de preços não inclui o prazo, então vamos ajustar o mapeamento
+    return response.data
+        .filter(servico => !servico.msgErro)
+        .map(servico => ({
+            id: servico.coProduto,
+            name: servico.coProduto === '03298' ? 'PAC Contrato' : 'SEDEX Contrato',
+            price: servico.pcFinal.replace(',', '.'),
+            // A API de Preços não retorna o prazo. Você precisaria de uma chamada separada para a API de Prazos.
+            delivery_time: 'N/A', 
+            company: {
+                name: 'Correios (Contrato)',
+                picture: 'https://www.melhorenvio.com.br/images/shipping-companies/correios.png'
+            }
+        } ));
 };
+
 
 // --- CONTROLLER PRINCIPAL ---
 const calculateFreight = async (req, res) => {
-    console.log("DADOS RECEBIDOS NO BACKEND:", req.body);
     const payload = req.body;
 
-    if (!payload || !payload.from || !payload.to || !payload.package) {
-        return res.status(400).json({ message: 'Dados da cotação incompletos.' });
+    if (
+        !payload ||
+        !payload.from?.postal_code ||
+        !payload.to?.postal_code ||
+        !payload.package?.weight ||
+        !payload.package?.length ||
+        !payload.package?.width ||
+        !payload.package?.height
+    ) {
+        return res.status(400).json({ message: '❌ Dados da cotação incompletos ou inválidos.' });
     }
 
     try {
@@ -128,7 +160,9 @@ const calculateFreight = async (req, res) => {
         if (correiosResult.status === 'fulfilled') {
             allQuotes.push(...correiosResult.value);
         } else {
-            const errorData = correiosResult.reason.response ? (correiosResult.reason.response.data.msgs || correiosResult.reason.response.data) : correiosResult.reason.message;
+            const errorData = correiosResult.reason.response
+                ? JSON.stringify(correiosResult.reason.response.data, null, 2)
+                : correiosResult.reason.message;
             console.error("Erro na chamada dos Correios (API Nova):", errorData);
         }
 
@@ -136,13 +170,13 @@ const calculateFreight = async (req, res) => {
         res.status(200).json(allQuotes);
 
     } catch (error) {
-        console.error("Erro geral no calculateFreight:", error);
+        console.error("Erro geral no calculateFreight:", error.message);
         res.status(500).json({ message: "Ocorreu um erro geral ao calcular o frete." });
     }
 };
 
-// Exportamos a função de gerar token para que o trackingController possa usá-la
+// Exporta tudo
 module.exports = {
     calculateFreight,
-    getCorreiosToken 
+    getCorreiosToken
 };
