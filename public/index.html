@@ -1,60 +1,131 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard - Niza Esteves Logística</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
     <style>
         :root {
-            --cor-principal: #004d40; /* Verde escuro */
-            --cor-acento: #daa520;   /* Dourado */
+            --cor-principal: #004d40;
+            --cor-acento: #daa520;
         }
-        .sidebar { background-color: var(--cor-principal); }
-        .btn-acento { background-color: var(--cor-acento); color: var(--cor-principal); font-weight: bold; }
-        .btn-acento:hover { background-color: #c9961d; }
-        .btn-verde { background-color: var(--cor-principal); color: white; }
-        .btn-verde:hover { background-color: #00382e; }
-        .input-label { position: absolute; top: -0.75rem; left: 0.75rem; font-size: 0.75rem; color: #6b7280; background-color: white; padding: 0 0.25rem; }
-        #toast-notification { transition: transform 0.5s ease-in-out; z-index: 1000; }
-        #toast-notification.show { transform: translateX(0); }
-        #toast-notification.success { background-color: var(--cor-principal); }
-        #toast-notification.error { background-color: #ef4444; }
-        .modal-overlay { background-color: rgba(0,0,0,0.5); }
-        
-        /* Estilos da Linha do Tempo do Rastreamento */
-        .timeline { border-left: 2px solid var(--cor-principal); }
-        .timeline-item { position: relative; }
+
+        .sidebar {
+            background-color: var(--cor-principal);
+        }
+
+        .btn-acento {
+            background-color: var(--cor-acento);
+            color: var(--cor-principal);
+            font-weight: bold;
+        }
+
+        .btn-acento:hover {
+            background-color: #c9961d;
+        }
+
+        .btn-verde {
+            background-color: var(--cor-principal);
+            color: #fff;
+        }
+
+        .btn-verde:hover {
+            background-color: #00382e;
+        }
+
+        .input-label {
+            position: absolute;
+            top: -0.75rem;
+            left: 0.75rem;
+            font-size: .75rem;
+            color: #6b7280;
+            background: #fff;
+            padding: 0 .25rem;
+        }
+
+        #toast-notification {
+            transition: transform .5s ease-in-out;
+            z-index: 1000;
+        }
+
+        #toast-notification.show {
+            transform: translateX(0);
+        }
+
+        #toast-notification.success {
+            background-color: var(--cor-principal);
+        }
+
+        #toast-notification.error {
+            background-color: #ef4444;
+        }
+
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, .5);
+        }
+
+        .timeline {
+            border-left: 2px solid var(--cor-principal);
+        }
+
+        .timeline-item {
+            position: relative;
+        }
+
         .timeline-item::before {
             content: '';
             position: absolute;
-            left: -0.5rem;
-            top: 0.5rem;
-            width: 0.875rem;
-            height: 0.875rem;
+            left: -.5rem;
+            top: .5rem;
+            width: .875rem;
+            height: .875rem;
             border-radius: 50%;
-            background-color: white;
+            background: #fff;
             border: 2px solid var(--cor-principal);
         }
+
         .timeline-item:first-child::before {
             background-color: var(--cor-acento);
         }
     </style>
 </head>
-<body class="bg-gray-100 font-sans">
 
+<body class="bg-gray-100 font-sans">
     <div class="flex h-screen">
         <!-- Sidebar -->
         <aside class="sidebar w-64 text-white flex-shrink-0">
-            <div class="p-6 text-center"><img src="logo.png" alt="Logo Niza Esteves" class="mx-auto rounded-full w-24 h-24 mb-4"><h1 class="text-xl font-semibold">Niza Esteves</h1><p class="text-sm text-gray-300">Linha Profissional</p></div>
+            <div class="p-6 text-center">
+                <img src="logo.png" alt="Logo Niza Esteves" class="mx-auto rounded-full w-24 h-24 mb-4" />
+                <h1 class="text-xl font-semibold">Niza Esteves</h1>
+                <p class="text-sm text-gray-300">Linha Profissional</p>
+            </div>
             <nav>
                 <ul>
-                    <li class="p-4 hover:bg-white/10 cursor-pointer border-l-4 border-yellow-400"><a href="#" class="flex items-center"><i class="fas fa-home w-6 mr-3"></i> Início</a></li>
-                    <li class="p-4 hover:bg-white/10 cursor-pointer"><a href="#" class="flex items-center"><i class="fas fa-cogs w-6 mr-3"></i> Configurações</a></li>
-                    <li class="p-4 hover:bg-white/10 cursor-pointer"><a href="#" class="flex items-center"><i class="fas fa-users w-6 mr-3"></i> Clientes</a></li>
-                    <li class="p-4 hover:bg-white/10 cursor-pointer"><a href="#" class="flex items-center"><i class="fas fa-box-open w-6 mr-3"></i> Embalagens</a></li>
-                    <li class="p-4 hover:bg-white/10 cursor-pointer"><a href="#" class="flex items-center"><i class="fas fa-truck w-6 mr-3"></i> Envios</a></li>
+                    <li class="p-4 hover:bg-white/10 cursor-pointer border-l-4 border-yellow-400">
+                        <a href="#" class="flex items-center" onclick="mostrarAba('dashboard-conteudo')">
+                            <i class="fas fa-home w-6 mr-3"></i> Início
+                        </a>
+                    </li>
+                    <li class="p-4 hover:bg-white/10 cursor-pointer">
+                        <a href="#" class="flex items-center"><i class="fas fa-cogs w-6 mr-3"></i> Configurações</a>
+                    </li>
+                    <li class="p-4 hover:bg-white/10 cursor-pointer">
+                        <a href="#" class="flex items-center" onclick="mostrarAba('status-etiquetas')">
+                            <i class="fas fa-tags w-6 mr-3"></i> Status Etiquetas
+                        </a>
+                    </li>
+                    <li class="p-4 hover:bg-white/10 cursor-pointer">
+                        <a href="#" class="flex items-center"><i class="fas fa-users w-6 mr-3"></i> Clientes</a>
+                    </li>
+                    <li class="p-4 hover:bg-white/10 cursor-pointer">
+                        <a href="#" class="flex items-center"><i class="fas fa-box-open w-6 mr-3"></i> Embalagens</a>
+                    </li>
+                    <li class="p-4 hover:bg-white/10 cursor-pointer">
+                        <a href="#" class="flex items-center"><i class="fas fa-truck w-6 mr-3"></i> Envios</a>
+                    </li>
                 </ul>
             </nav>
         </aside>
@@ -66,90 +137,205 @@
                 <h2 class="text-2xl font-bold text-gray-800">Dashboard</h2>
                 <div id="cart-icon-container" class="relative cursor-pointer">
                     <i class="fas fa-shopping-cart text-2xl text-gray-600"></i>
-                    <span id="cart-badge" class="hidden absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                    <span id="cart-badge"
+                        class="hidden absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
                 </div>
             </header>
 
             <div class="p-8 overflow-y-auto flex-1">
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <!-- Coluna da Esquerda -->
-                    <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-md">
-                        <h3 class="text-xl font-bold mb-4 text-gray-700">Cotação de Frete</h3>
-                        
-                        <!-- Formulário Principal de Cotação -->
-                        <form id="cotacao-form" novalidate>
-                            <div class="mb-4"><h4 class="font-semibold text-gray-600 mb-2">Origem (Remetente)</h4><div class="p-4 bg-gray-50 rounded-md" id="dados-remetente"></div></div>
-                            
-                            <div class="mb-4">
-                                <h4 class="font-semibold text-gray-600 mb-2">Destino (Cliente)</h4>
-                                <div class="flex items-center gap-2">
-                                    <select id="cliente-select" class="w-full p-2 border rounded-md"></select>
-                                    <button type="button" id="add-cliente-btn" class="btn-verde p-2 rounded-md" title="Adicionar novo cliente"><i class="fas fa-plus"></i></button>
-                                </div>
-                            </div>
-
-                            <!-- Formulário de Novo Cliente (posicionado corretamente) -->
-                            <div id="novo-cliente-form-container" class="hidden p-4 border-dashed border-2 border-gray-300 rounded-md my-4">
-                                <h4 class="font-semibold text-gray-600 mb-2">Cadastrar Novo Cliente</h4>
-                                <div id="novo-cliente-form-content" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <input type="text" id="new-client-name" placeholder="Nome Completo *" class="p-2 border rounded-md md:col-span-2">
-                                    <input type="text" id="new-client-cep" placeholder="CEP *" class="p-2 border rounded-md" maxlength="9" pattern="[0-9]{5}-?[0-9]{3}" title="Digite 8 números, com ou sem traço">
-                                    <input type="text" id="new-client-rua" placeholder="Rua / Logradouro *" class="p-2 border rounded-md">
-                                    <input type="text" id="new-client-numero" placeholder="Número *" class="p-2 border rounded-md">
-                                    <input type="text" id="new-client-bairro" placeholder="Bairro *" class="p-2 border rounded-md">
-                                    <input type="text" id="new-client-cidade" placeholder="Cidade *" class="p-2 border rounded-md">
-                                    <input type="text" id="new-client-estado" placeholder="Estado (UF) *" class="p-2 border rounded-md">
-                                    <input type="text" id="new-client-complemento" placeholder="Complemento" class="p-2 border rounded-md md:col-span-2">
-                                </div>
-                                <div class="flex gap-4 mt-4"><button type="button" id="save-new-client-btn" class="btn-acento px-4 py-2 rounded-md">Salvar Cliente</button><button type="button" id="cancel-new-client-btn" class="bg-gray-300 px-4 py-2 rounded-md">Cancelar</button></div>
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-4 mt-2"><input type="text" id="dest-cep" placeholder="CEP de Destino" class="p-2 border rounded-md bg-white" required maxlength="9"><input type="text" id="dest-nome" placeholder="Nome Completo" class="p-2 border rounded-md bg-white" required></div>
-                            
-                            <div class="my-4">
-                                <h4 class="font-semibold text-gray-600 mb-2">Pacote</h4>
-                                <div class="flex items-center gap-2">
-                                    <select id="pacote-select" class="w-full p-2 border rounded-md"></select>
-                                    <button type="button" id="add-pacote-btn" class="btn-verde p-2 rounded-md" title="Adicionar nova embalagem"><i class="fas fa-plus"></i></button>
-                                </div>
-                            </div>
-
-                            <!-- Formulário de Nova Embalagem (posicionado corretamente) -->
-                            <div id="novo-pacote-form-container" class="hidden p-4 border-dashed border-2 border-gray-300 rounded-md my-4">
-                                <h4 class="font-semibold text-gray-600 mb-2">Cadastrar Nova Embalagem</h4>
-                                <div id="novo-pacote-form-content" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <input type="text" id="new-pkg-name" placeholder="Nome da Embalagem (Ex: Caixa P) *" class="p-2 border rounded-md md:col-span-2">
-                                    <input type="number" step="0.01" id="new-pkg-weight" placeholder="Peso da Caixa (kg) *" class="p-2 border rounded-md">
-                                    <input type="number" id="new-pkg-height" placeholder="Altura (cm) *" class="p-2 border rounded-md">
-                                    <input type="number" id="new-pkg-width" placeholder="Largura (cm) *" class="p-2 border rounded-md">
-                                    <input type="number" id="new-pkg-length" placeholder="Comprimento (cm) *" class="p-2 border rounded-md">
-                                </div>
-                                <div class="flex gap-4 mt-4"><button type="button" id="save-new-pkg-btn" class="btn-acento px-4 py-2 rounded-md">Salvar Embalagem</button><button type="button" id="cancel-new-pkg-btn" class="bg-gray-300 px-4 py-2 rounded-md">Cancelar</button></div>
-                            </div>
-
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-2">
-                                <div class="relative"><label class="input-label">Peso (kg)</label><input type="number" step="0.01" min="0.01" max="60" id="pacote-peso" class="p-2 border rounded-md w-full" required title="O peso máximo é 60kg"></div>
-                                <div class="relative"><label class="input-label">Altura (cm)</label><input type="number" min="1" max="30" id="pacote-altura" class="p-2 border rounded-md w-full" required title="A altura máxima é 30cm"></div>
-                                <div class="relative"><label class="input-label">Largura (cm)</label><input type="number" min="1" max="100" id="pacote-largura" class="p-2 border rounded-md w-full" required title="A largura máxima é 100cm"></div>
-                                <div class="relative"><label class="input-label">Comprimento (cm)</label><input type="number" min="1" max="100" id="pacote-comprimento" class="p-2 border rounded-md w-full" required title="O comprimento máximo é 100cm"></div>
-                            </div>
-                            <button type="submit" class="btn-acento w-full p-3 rounded-md mt-6">Calcular Frete</button>
-                        </form>
-                    </div>
-                    <!-- Coluna da Direita -->
-                    <div class="flex flex-col gap-6">
-                        <div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-xl font-bold mb-4 text-gray-700">Rastreamento Rápido</h3><div class="flex"><input type="text" id="tracking-code-input" placeholder="Código de rastreio" class="w-full p-2 border rounded-l-md"><button type="button" id="track-btn" class="btn-verde p-3 rounded-r-md"><i class="fas fa-search"></i></button></div></div>
-                        <div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-xl font-bold mb-4 text-gray-700">Resultados da Cotação</h3><div id="resultados-cotacao" class="space-y-2"><p class="text-gray-500">Aguardando cotação...</p></div></div>
+                <!-- ABA: Status Etiquetas (inicia oculta) -->
+                <div id="status-etiquetas" class="hidden">
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h2 class="text-2xl font-bold mb-4 text-gray-800">Status das Etiquetas</h2>
+                        <div id="lista-status-etiquetas" class="space-y-4">
+                            <p class="text-gray-500">Carregando etiquetas...</p>
+                        </div>
                     </div>
                 </div>
+
+                <!-- ABA: Dashboard principal (inicia visível) -->
+                <div id="dashboard-conteudo">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Coluna da Esquerda -->
+                        <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-md">
+                            <h3 class="text-xl font-bold mb-4 text-gray-700">Cotação de Frete</h3>
+
+                            <!-- Formulário Principal de Cotação -->
+                            <form id="cotacao-form" novalidate>
+                                <div class="mb-4">
+                                    <h4 class="font-semibold text-gray-600 mb-2">Origem (Remetente)</h4>
+                                    <div class="p-4 bg-gray-50 rounded-md" id="dados-remetente"></div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <h4 class="font-semibold text-gray-600 mb-2">Destino (Cliente)</h4>
+                                    <div class="flex items-center gap-2">
+                                        <select id="cliente-select" class="w-full p-2 border rounded-md"></select>
+                                        <button type="button" id="add-cliente-btn" class="btn-verde p-2 rounded-md"
+                                            title="Adicionar novo cliente">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Novo Cliente -->
+                                <div id="novo-cliente-form-container"
+                                    class="hidden p-4 border-dashed border-2 border-gray-300 rounded-md my-4">
+                                    <h4 class="font-semibold text-gray-600 mb-2">Cadastrar Novo Cliente</h4>
+                                    <div id="novo-cliente-form-content" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <input type="text" id="new-client-name" placeholder="Nome Completo *"
+                                            class="p-2 border rounded-md md:col-span-2" />
+                                        <input type="text" id="new-client-cep" placeholder="CEP *"
+                                            class="p-2 border rounded-md" maxlength="9" pattern="[0-9]{5}-?[0-9]{3}"
+                                            title="Digite 8 números, com ou sem traço" />
+                                        <input type="text" id="new-client-rua" placeholder="Rua / Logradouro *"
+                                            class="p-2 border rounded-md" />
+                                        <input type="text" id="new-client-numero" placeholder="Número *"
+                                            class="p-2 border rounded-md" />
+                                        <input type="text" id="new-client-bairro" placeholder="Bairro *"
+                                            class="p-2 border rounded-md" />
+                                        <input type="text" id="new-client-cidade" placeholder="Cidade *"
+                                            class="p-2 border rounded-md" />
+                                        <input type="text" id="new-client-estado" placeholder="Estado (UF) *"
+                                            class="p-2 border rounded-md" />
+                                        <input type="text" id="new-client-complemento" placeholder="Complemento"
+                                            class="p-2 border rounded-md md:col-span-2" />
+                                    </div>
+                                    <div class="flex gap-4 mt-4">
+                                        <button type="button" id="save-new-client-btn"
+                                            class="btn-acento px-4 py-2 rounded-md">Salvar Cliente</button>
+                                        <button type="button" id="cancel-new-client-btn"
+                                            class="bg-gray-300 px-4 py-2 rounded-md">Cancelar</button>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-4 mt-2">
+                                    <input type="text" id="dest-cep" placeholder="CEP de Destino"
+                                        class="p-2 border rounded-md bg-white" required maxlength="9" />
+                                    <input type="text" id="dest-nome" placeholder="Nome Completo"
+                                        class="p-2 border rounded-md bg-white" required />
+                                </div>
+
+                                <div class="my-4">
+                                    <h4 class="font-semibold text-gray-600 mb-2">Pacote</h4>
+                                    <div class="flex items-center gap-2">
+                                        <select id="pacote-select" class="w-full p-2 border rounded-md"></select>
+                                        <button type="button" id="add-pacote-btn" class="btn-verde p-2 rounded-md"
+                                            title="Adicionar nova embalagem">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Nova Embalagem -->
+                                <div id="novo-pacote-form-container"
+                                    class="hidden p-4 border-dashed border-2 border-gray-300 rounded-md my-4">
+                                    <h4 class="font-semibold text-gray-600 mb-2">Cadastrar Nova Embalagem</h4>
+                                    <div id="novo-pacote-form-content" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <input type="text" id="new-pkg-name"
+                                            placeholder="Nome da Embalagem (Ex: Caixa P) *"
+                                            class="p-2 border rounded-md md:col-span-2" />
+                                        <input type="number" step="0.01" id="new-pkg-weight"
+                                            placeholder="Peso da Caixa (kg) *" class="p-2 border rounded-md" />
+                                        <input type="number" id="new-pkg-height" placeholder="Altura (cm) *"
+                                            class="p-2 border rounded-md" />
+                                        <input type="number" id="new-pkg-width" placeholder="Largura (cm) *"
+                                            class="p-2 border rounded-md" />
+                                        <input type="number" id="new-pkg-length" placeholder="Comprimento (cm) *"
+                                            class="p-2 border rounded-md" />
+                                    </div>
+                                    <div class="flex gap-4 mt-4">
+                                        <button type="button" id="save-new-pkg-btn"
+                                            class="btn-acento px-4 py-2 rounded-md">Salvar Embalagem</button>
+                                        <button type="button" id="cancel-new-pkg-btn"
+                                            class="bg-gray-300 px-4 py-2 rounded-md">Cancelar</button>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-2">
+                                    <div class="relative">
+                                        <label class="input-label">Peso (kg)</label>
+                                        <input type="number" step="0.01" min="0.01" max="60" id="pacote-peso"
+                                            class="p-2 border rounded-md w-full" required
+                                            title="O peso máximo é 60kg" />
+                                    </div>
+                                    <div class="relative">
+                                        <label class="input-label">Altura (cm)</label>
+                                        <input type="number" min="1" max="30" id="pacote-altura"
+                                            class="p-2 border rounded-md w-full" required
+                                            title="A altura máxima é 30cm" />
+                                    </div>
+                                    <div class="relative">
+                                        <label class="input-label">Largura (cm)</label>
+                                        <input type="number" min="1" max="100" id="pacote-largura"
+                                            class="p-2 border rounded-md w-full" required
+                                            title="A largura máxima é 100cm" />
+                                    </div>
+                                    <div class="relative">
+                                        <label class="input-label">Comprimento (cm)</label>
+                                        <input type="number" min="1" max="100" id="pacote-comprimento"
+                                            class="p-2 border rounded-md w-full" required
+                                            title="O comprimento máximo é 100cm" />
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn-acento w-full p-3 rounded-md mt-6">Calcular
+                                    Frete</button>
+                            </form>
+                        </div>
+
+                        <!-- Coluna da Direita -->
+                        <div class="flex flex-col gap-6">
+                            <div class="bg-white p-6 rounded-lg shadow-md">
+                                <h3 class="text-xl font-bold mb-4 text-gray-700">Rastreamento Rápido</h3>
+                                <div class="flex">
+                                    <input type="text" id="tracking-code-input" placeholder="Código de rastreio"
+                                        class="w-full p-2 border rounded-l-md" />
+                                    <button type="button" id="track-btn" class="btn-verde p-3 rounded-r-md">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow-md">
+                                <h3 class="text-xl font-bold mb-4 text-gray-700">Resultados da Cotação</h3>
+                                <div id="resultados-cotacao" class="space-y-2">
+                                    <p class="text-gray-500">Aguardando cotação...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- /dashboard-conteudo -->
             </div>
         </main>
     </div>
-    
+
     <!-- Modals -->
-    <div id="cart-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-overlay"><div class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6"><div class="flex justify-between items-center mb-4"><h2 class="text-2xl font-bold">Carrinho de Etiquetas</h2><button id="close-cart-btn" class="text-2xl">&times;</button></div><div id="cart-items" class="space-y-3 max-h-96 overflow-y-auto"></div><button id="finalizar-btn" class="hidden btn-acento w-full p-3 rounded-md mt-6">Finalizar Envios</button></div></div>
-    <div id="tracking-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-overlay"><div class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6"><div class="flex justify-between items-center mb-4"><h2 class="text-2xl font-bold">Status do Rastreio</h2><button id="close-tracking-btn" class="text-2xl">&times;</button></div><div id="tracking-results" class="space-y-3 max-h-96 overflow-y-auto"></div></div></div>
-    <div id="toast-notification" class="hidden fixed top-5 right-5 text-white px-6 py-3 rounded-lg shadow-lg transform translate-x-full"><p id="toast-message"></p></div>
+    <div id="cart-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-overlay">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold">Carrinho de Etiquetas</h2>
+                <button id="close-cart-btn" class="text-2xl">&times;</button>
+            </div>
+            <div id="cart-items" class="space-y-3 max-h-96 overflow-y-auto"></div>
+            <button id="finalizar-btn" class="hidden btn-acento w-full p-3 rounded-md mt-6">Finalizar Envios</button>
+        </div>
+    </div>
+
+    <div id="tracking-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-overlay">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold">Status do Rastreio</h2>
+                <button id="close-tracking-btn" class="text-2xl">&times;</button>
+            </div>
+            <div id="tracking-results" class="space-y-3 max-h-96 overflow-y-auto"></div>
+        </div>
+    </div>
+
+    <div id="toast-notification"
+        class="hidden fixed top-5 right-5 text-white px-6 py-3 rounded-lg shadow-lg transform translate-x-full">
+        <p id="toast-message"></p>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -184,18 +370,14 @@
             const newClientCepInput = document.getElementById('new-client-cep');
             const toast = document.getElementById('toast-notification');
             const toastMessage = document.getElementById('toast-message');
-            
+
             let carrinhoItens = [];
 
             function showToast(message, type = 'error') {
                 toastMessage.textContent = message;
                 toast.classList.remove('success', 'error', 'hidden', 'translate-x-full');
                 toast.classList.add(type, 'show');
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                    toast.classList.add('translate-x-full');
-                    setTimeout(() => toast.classList.add('hidden'), 500);
-                }, 3000);
+                setTimeout(() => { toast.classList.remove('show'); toast.classList.add('translate-x-full'); setTimeout(() => toast.classList.add('hidden'), 500); }, 3000);
             }
 
             function atualizarCarrinho() {
@@ -217,6 +399,43 @@
                 }
             }
 
+            finalizarBtn.addEventListener('click', async () => {
+                if (carrinhoItens.length === 0) {
+                    showToast("O carrinho está vazio!", "error");
+                    return;
+                }
+
+                try {
+                    for (let item of carrinhoItens) {
+                        const response = await fetch('/api/shipments', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                nomeCliente: item.clienteNome,
+                                transportadora: item.cotacao.company.name,
+                                codigoRastreio: `R${Date.now()}${Math.floor(Math.random() * 1000)}`, // gerar código fake
+                                preco: item.cotacao.price
+                            })
+                        });
+
+                        if (!response.ok) throw new Error("Falha ao criar envio");
+
+                        await response.json();
+                    }
+
+                    carrinhoItens = []; // limpa carrinho no front
+                    atualizarCarrinho();
+                    showToast("Envios finalizados e salvos no banco!", "success");
+
+                    // opcional: abre aba Status Etiquetas automaticamente
+                    mostrarAba('status-etiquetas');
+
+                } catch (error) {
+                    console.error(error);
+                    showToast("Erro ao finalizar envios", "error");
+                }
+            });
+
             cartItemsDiv.addEventListener('click', (e) => {
                 if (e.target.classList.contains('remover-carrinho-btn')) {
                     const index = parseInt(e.target.dataset.index);
@@ -231,12 +450,10 @@
             cotacaoForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const requiredInputs = cotacaoForm.querySelectorAll('input[required]');
-                for(let input of requiredInputs) {
+                for (let input of requiredInputs) {
                     if (!input.value.trim()) {
                         let labelText = input.placeholder;
-                        if(input.id.includes('pacote-')) {
-                            labelText = input.parentElement.querySelector('label').textContent;
-                        }
+                        if (input.id.includes('pacote-')) { labelText = input.parentElement.querySelector('label').textContent; }
                         showToast(`Por favor, preencha o campo: ${labelText}`, 'error');
                         return;
                     }
@@ -248,56 +465,57 @@
                     if (!response.ok) throw new Error('Falha na resposta da API');
                     const cotacoes = await response.json();
                     resultadosDiv.innerHTML = '';
-                    if (cotacoes.length === 0) {
-                        resultadosDiv.innerHTML = '<p class="text-red-500">Nenhuma opção de frete encontrada.</p>';
-                        return;
-                    }
+                    if (cotacoes.length === 0) { resultadosDiv.innerHTML = '<p class="text-red-500">Nenhuma opção de frete encontrada.</p>'; return; }
                     cotacoes.forEach(cotacao => {
                         const div = document.createElement('div');
                         div.className = 'p-3 border rounded-md bg-gray-50 flex justify-between items-center';
                         div.innerHTML = `<div><p class="font-bold">${cotacao.company.name} - ${cotacao.name}</p><p class="text-sm">Prazo: ${cotacao.delivery_time} dias</p></div><div class="text-right"><p class="text-lg font-bold text-green-700">R$ ${cotacao.price}</p><button class="selecionar-frete-btn text-sm btn-acento px-2 py-1 rounded-md mt-1">Selecionar</button></div>`;
                         resultadosDiv.appendChild(div);
                         div.querySelector('.selecionar-frete-btn').addEventListener('click', () => {
-                            const clienteNome = destNomeInput.value || "Cliente não informado";
-                            carrinhoItens.push({ cotacao: cotacao, clienteNome: clienteNome });
+                            const clienteNome = destNomeInput.value || 'Cliente não informado';
+                            carrinhoItens.push({ cotacao, clienteNome });
                             atualizarCarrinho();
                             showToast(`Frete "${cotacao.name}" adicionado ao carrinho!`, 'success');
                         });
                     });
-                } catch (error) {
-                    console.error('Erro ao cotar frete:', error);
+                } catch (err) {
+                    console.error('Erro ao cotar frete:', err);
                     resultadosDiv.innerHTML = '<p class="text-red-500">Ocorreu um erro ao buscar as cotações.</p>';
                 }
             });
-            
+
             trackBtn.addEventListener('click', async () => {
                 const code = trackingCodeInput.value.trim();
-                if (!code) {
-                    showToast('Por favor, insira um código de rastreio.', 'error');
-                    return;
-                }
+                if (!code) { showToast('Por favor, insira um código de rastreio.', 'error'); return; }
                 trackingModal.classList.remove('hidden');
                 trackingResultsDiv.innerHTML = '<p>Buscando...</p>';
                 try {
                     const response = await fetch(`/api/tracking/${code}`);
                     const data = await response.json();
-
                     if (data.message || (data.eventos && data.eventos.length === 0)) {
                         trackingResultsDiv.innerHTML = `<p class="text-red-500">${data.message || 'Nenhum evento encontrado para este código.'}</p>`;
                         return;
                     }
-
                     trackingResultsDiv.innerHTML = '<div class="timeline pl-4"></div>';
                     const timelineContainer = trackingResultsDiv.querySelector('.timeline');
 
-                    data.eventos.forEach(evento => {
+                    data.eventos.forEach((evento) => {
                         const div = document.createElement('div');
-                        div.className = 'timeline-item pb-4';
-                        const dataFormatada = new Date(evento.dtHrCriado).toLocaleString('pt-BR');
-                        div.innerHTML = `<p class="font-bold">${evento.descricao}</p><p class="text-sm text-gray-600">${evento.unidade.nome}</p><p class="text-xs text-gray-400">${dataFormatada}</p>`;
+                        div.className = 'flex items-start gap-2 mb-4';
+                        const dataFormatada = evento.dtHrCriado ? new Date(evento.dtHrCriado).toLocaleString('pt-BR') : 'Data indefinida';
+                        const cor = evento.descricao?.toLowerCase().includes('entregue') ? 'bg-green-500'
+                            : evento.descricao?.toLowerCase().includes('postado') ? 'bg-blue-500'
+                                : evento.descricao?.toLowerCase().includes('transferência') ? 'bg-yellow-500' : 'bg-gray-400';
+                        div.innerHTML = `
+              <span class="h-3 w-3 rounded-full mt-1 ${cor} flex-shrink-0"></span>
+              <div>
+                <p class="font-semibold text-sm">${evento.descricao || 'Status desconhecido'}</p>
+                <p class="text-xs text-gray-500">${evento.trajetoFormatado || 'Local não informado'}</p>
+                <p class="text-xs text-gray-400">${dataFormatada}</p>
+              </div>`;
                         timelineContainer.appendChild(div);
                     });
-                } catch (error) {
+                } catch (err) {
                     trackingResultsDiv.innerHTML = '<p class="text-red-500">Não foi possível rastrear a encomenda.</p>';
                 }
             });
@@ -310,11 +528,14 @@
                         const settings = await response.json();
                         remetenteDiv.innerHTML = `<p><strong>${settings.companyName}</strong></p><p>${settings.address.street}, ${settings.address.number}</p><p>${settings.address.city} - ${settings.address.state}, ${settings.address.postalCode}</p>`;
                         remetenteDiv.dataset.cepOrigem = settings.address.postalCode;
-                    } else { remetenteDiv.innerHTML = '<p class="text-red-500">Configure os dados do remetente.</p>'; }
-                } catch (error) { console.error('Erro ao buscar configurações:', error); }
+                    } else {
+                        remetenteDiv.innerHTML = '<p class="text-red-500">Configure os dados do remetente.</p>';
+                    }
+                } catch (err) { console.error('Erro ao buscar configurações:', err); }
                 await carregarClientes();
                 await carregarPacotes();
             }
+
             async function carregarClientes() {
                 try {
                     const response = await fetch('/api/clients');
@@ -327,8 +548,9 @@
                         option.dataset.dadosCliente = JSON.stringify(client);
                         clienteSelect.appendChild(option);
                     });
-                } catch (error) { console.error('Erro ao buscar clientes:', error); }
+                } catch (err) { console.error('Erro ao buscar clientes:', err); }
             }
+
             async function carregarPacotes() {
                 try {
                     const response = await fetch('/api/packages');
@@ -341,68 +563,58 @@
                         option.dataset.dados = JSON.stringify(pkg);
                         pacoteSelect.appendChild(option);
                     });
-                } catch (error) { console.error('Erro ao buscar embalagens:', error); }
+                } catch (err) { console.error('Erro ao buscar embalagens:', err); }
             }
+
             addClienteBtn.addEventListener('click', () => novoClienteFormContainer.classList.remove('hidden'));
             cancelNewClientBtn.addEventListener('click', () => novoClienteFormContainer.classList.add('hidden'));
             addPacoteBtn.addEventListener('click', () => novoPacoteFormContainer.classList.remove('hidden'));
             cancelNewPkgBtn.addEventListener('click', () => novoPacoteFormContainer.classList.add('hidden'));
-            
+
             saveNewClientBtn.addEventListener('click', async () => {
                 const inputs = novoClienteFormContent.querySelectorAll('input');
                 let allFilled = true;
-                for (let input of inputs) {
-                    if (input.placeholder.includes('*') && input.value.trim() === '') {
-                        allFilled = false;
-                        break;
-                    }
-                }
+                for (let input of inputs) { if (input.placeholder.includes('*') && input.value.trim() === '') { allFilled = false; break; } }
                 if (!allFilled) { showToast('Por favor, preencha todos os campos com *', 'error'); return; }
-                const newClientData = { fullName: document.getElementById('new-client-name').value, address: { postalCode: document.getElementById('new-client-cep').value, street: document.getElementById('new-client-rua').value, number: document.getElementById('new-client-numero').value, bairro: document.getElementById('new-client-bairro').value, city: document.getElementById('new-client-cidade').value, state: document.getElementById('new-client-estado').value, complement: document.getElementById('new-client-complemento').value, } };
+                const newClientData = { fullName: document.getElementById('new-client-name').value, address: { postalCode: document.getElementById('new-client-cep').value, street: document.getElementById('new-client-rua').value, number: document.getElementById('new-client-numero').value, bairro: document.getElementById('new-client-bairro').value, city: document.getElementById('new-client-cidade').value, state: document.getElementById('new-client-estado').value, complement: document.getElementById('new-client-complemento').value } };
                 try {
                     const response = await fetch('/api/clients', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(newClientData) });
                     if (!response.ok) throw new Error('Falha ao salvar cliente.');
                     await carregarClientes();
                     showToast('Cliente salvo com sucesso!', 'success');
-                    novoClienteFormContent.querySelectorAll('input').forEach(input => input.value = '');
+                    novoClienteFormContent.querySelectorAll('input').forEach(i => i.value = '');
                     novoClienteFormContainer.classList.add('hidden');
-                } catch (error) { console.error('Erro ao salvar cliente:', error); showToast('Não foi possível salvar o cliente.', 'error'); }
+                } catch (err) { console.error('Erro ao salvar cliente:', err); showToast('Não foi possível salvar o cliente.', 'error'); }
             });
-            
+
             saveNewPkgBtn.addEventListener('click', async () => {
                 const inputs = novoPacoteFormContent.querySelectorAll('input');
-                 let allFilled = true;
-                for (let input of inputs) {
-                    if (input.placeholder.includes('*') && input.value.trim() === '') {
-                        allFilled = false;
-                        break;
-                    }
-                }
+                let allFilled = true;
+                for (let input of inputs) { if (input.placeholder.includes('*') && input.value.trim() === '') { allFilled = false; break; } }
                 if (!allFilled) { showToast('Por favor, preencha todos os campos com *', 'error'); return; }
-                const newPkgData = { name: document.getElementById('new-pkg-name').value, weight: parseFloat(document.getElementById('new-pkg-weight').value), dimensions: { height: parseInt(document.getElementById('new-pkg-height').value), width: parseInt(document.getElementById('new-pkg-width').value), length: parseInt(document.getElementById('new-pkg-length').value), } };
+                const newPkgData = { name: document.getElementById('new-pkg-name').value, weight: parseFloat(document.getElementById('new-pkg-weight').value), dimensions: { height: parseInt(document.getElementById('new-pkg-height').value), width: parseInt(document.getElementById('new-pkg-width').value), length: parseInt(document.getElementById('new-pkg-length').value) } };
                 try {
                     const response = await fetch('/api/packages', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(newPkgData) });
                     if (!response.ok) throw new Error('Falha ao salvar embalagem.');
                     await carregarPacotes();
                     showToast('Embalagem salva com sucesso!', 'success');
-                    novoPacoteFormContent.querySelectorAll('input').forEach(input => input.value = '');
+                    novoPacoteFormContent.querySelectorAll('input').forEach(i => i.value = '');
                     novoPacoteFormContainer.classList.add('hidden');
-                } catch (error) { console.error('Erro ao salvar embalagem:', error); showToast('Não foi possível salvar a embalagem.', 'error'); }
+                } catch (err) { console.error('Erro ao salvar embalagem:', err); showToast('Não foi possível salvar a embalagem.', 'error'); }
             });
-            
+
             clienteSelect.addEventListener('change', (e) => {
-                if (!e.target.value) { destNomeInput.value = ''; destCepInput.value = ''; return; };
+                if (!e.target.value) { document.getElementById('dest-nome').value = ''; document.getElementById('dest-cep').value = ''; return; }
                 const selectedOption = e.target.options[e.target.selectedIndex];
                 const dados = JSON.parse(selectedOption.dataset.dadosCliente);
-                destNomeInput.value = dados.fullName;
-                destCepInput.value = dados.address.postalCode;
+                document.getElementById('dest-nome').value = dados.fullName;
+                document.getElementById('dest-cep').value = dados.address.postalCode;
             });
-            destCepInput.addEventListener('input', () => { clienteSelect.value = ''; });
-            destNomeInput.addEventListener('input', () => { clienteSelect.value = ''; });
+            document.getElementById('dest-cep').addEventListener('input', () => { clienteSelect.value = ''; });
+            document.getElementById('dest-nome').addEventListener('input', () => { clienteSelect.value = ''; });
             pacoteSelect.addEventListener('change', (e) => {
                 if (!e.target.value) return;
-                const selectedOption = e.target.options[e.target.selectedIndex];
-                const dados = JSON.parse(selectedOption.dataset.dados);
+                const dados = JSON.parse(e.target.options[e.target.selectedIndex].dataset.dados);
                 document.getElementById('pacote-peso').value = dados.weight;
                 document.getElementById('pacote-altura').value = dados.dimensions.height;
                 document.getElementById('pacote-largura').value = dados.dimensions.width;
@@ -413,25 +625,37 @@
                 const cep = newClientCepInput.value.replace(/\D/g, '');
                 if (cep.length !== 8) return;
                 try {
-                    const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-                    const data = await response.json();
-                    if (data.erro) {
-                        showToast('CEP não encontrado.', 'error');
-                    } else {
+                    const r = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+                    const data = await r.json();
+                    if (data.erro) { showToast('CEP não encontrado.', 'error'); }
+                    else {
                         document.getElementById('new-client-rua').value = data.logradouro;
                         document.getElementById('new-client-bairro').value = data.bairro;
                         document.getElementById('new-client-cidade').value = data.localidade;
                         document.getElementById('new-client-estado').value = data.uf;
                         showToast('Endereço preenchido!', 'success');
                     }
-                } catch (error) {
-                    console.error('Erro ao buscar CEP:', error);
-                    showToast('Erro ao consultar o CEP.', 'error');
-                }
+                } catch (err) { console.error('Erro ao buscar CEP:', err); showToast('Erro ao consultar o CEP.', 'error'); }
             });
+
+            // FUNÇÃO DE TROCA DE ABAS (global)
+            window.mostrarAba = function (abaId) {
+                // Esconde ambas seções controladas
+                ['dashboard-conteudo', 'status-etiquetas'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.classList.add('hidden');
+                });
+                // Mostra a seção solicitada
+                const alvo = document.getElementById(abaId);
+                if (alvo) alvo.classList.remove('hidden');
+            };
 
             carregarDadosIniciais();
         });
     </script>
+
+    <!-- Script da aba de Status Etiquetas -->
+    <script src="/js/status-etiquetas.js"></script>
 </body>
+
 </html>
