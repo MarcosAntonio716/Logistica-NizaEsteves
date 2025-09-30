@@ -1,4 +1,3 @@
-// src/models/Shipment.js
 const mongoose = require('mongoose');
 
 const shipmentSchema = new mongoose.Schema(
@@ -31,6 +30,12 @@ const shipmentSchema = new mongoose.Schema(
       type: Number,
       required: true,
       min: 0,
+    },
+    origem: {
+      type: String,
+      required: true,
+      enum: ['Correios API', 'Melhor Envio'], 
+      index: true,
     },
     criadoEm: {
       type: Date,

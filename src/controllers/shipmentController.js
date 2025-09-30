@@ -12,9 +12,12 @@ const createShipment = async (req, res) => {
     const payload = req.body;
 
     const normalizar = (item) => {
-      const { nomeCliente, transportadora, codigoRastreio, preco, status } = item || {};
+      const { nomeCliente, transportadora, codigoRastreio, preco, status, origem } = item || {};
       if (!nomeCliente || !transportadora || !codigoRastreio || preco == null) {
         throw new Error('Dados incompletos. Campos obrigatórios: nomeCliente, transportadora, codigoRastreio, preco.');
+      }
+      if (!origem) {
+        throw new Error('Campo "origem" é obrigatório (ex: "Correios API" ou "Melhor Envio").');
       }
       return {
         nomeCliente: String(nomeCliente).trim(),
@@ -22,6 +25,7 @@ const createShipment = async (req, res) => {
         codigoRastreio: String(codigoRastreio).trim().toUpperCase(),
         preco: Number(preco),
         status: status || 'aguardando_pagamento',
+        origem: String(origem).trim(),   // 👈 adicionando a origem
       };
     };
 
@@ -38,7 +42,7 @@ const createShipment = async (req, res) => {
     if (error?.code === 11000) {
       return res.status(409).json({ message: 'Código de rastreio já existe.', campo: 'codigoRastreio' });
     }
-    if (error.message?.startsWith('Dados incompletos')) {
+    if (error.message?.startsWith('Dados incompletos') || error.message?.includes('origem')) {
       return res.status(400).json({ message: error.message });
     }
     console.error('Erro ao criar envio:', error);

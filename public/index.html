@@ -4,9 +4,10 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard - Niza Esteves Logística</title>
+    <title>Niza Esteves Logística</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="/logo.png" />
     <style>
         :root {
             --cor-principal: #004d40;
@@ -407,32 +408,31 @@
 
                 try {
                     for (let item of carrinhoItens) {
+                        // normaliza a origem para bater com o schema
+                        let origem = item.cotacao.source;
+                        if (origem === "Correios") origem = "Correios API";
+
                         const response = await fetch('/api/shipments', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
                                 nomeCliente: item.clienteNome,
                                 transportadora: item.cotacao.company.name,
-                                codigoRastreio: `R${Date.now()}${Math.floor(Math.random() * 1000)}`, // gerar código fake
-                                preco: item.cotacao.price
+                                codigoRastreio: `R${Date.now()}${Math.floor(Math.random() * 1000)}`,
+                                preco: item.cotacao.price,
+                                origem: origem   // ✅ agora vai bater com o enum
                             })
                         });
 
                         if (!response.ok) throw new Error("Falha ao criar envio");
-
                         await response.json();
                     }
 
-                    carrinhoItens = []; // limpa carrinho no front
-                    atualizarCarrinho();
-                    showToast("Envios finalizados e salvos no banco!", "success");
-
-                    // opcional: abre aba Status Etiquetas automaticamente
-                    mostrarAba('status-etiquetas');
-
-                } catch (error) {
-                    console.error(error);
-                    showToast("Erro ao finalizar envios", "error");
+                    showToast("Envios criados com sucesso!", "success");
+                    carrinhoItens = []; // limpa carrinho
+                } catch (err) {
+                    console.error(err);
+                    showToast("Erro ao finalizar os envios.", "error");
                 }
             });
 
