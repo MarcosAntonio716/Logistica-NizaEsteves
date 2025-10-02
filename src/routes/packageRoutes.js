@@ -9,6 +9,12 @@ router.post('/packages', packageController.createPackage);
 // Rota para listar todas as embalagens (GET /api/packages)
 router.get('/packages', packageController.getAllPackages);
 
+// Rota para atualizar uma embalagem por ID (PUT /api/packages/123)
+router.put('/packages/:id', packageController.updatePackage);
+
+// Rota para buscar uma embalagem por ID (GET /api/packages/123)
+router.get('/packages/:id', packageController.getPackageById);
+
 // Rota para apagar uma embalagem por ID (DELETE /api/packages/123)
 router.delete('/packages/:id', packageController.deletePackage);
 

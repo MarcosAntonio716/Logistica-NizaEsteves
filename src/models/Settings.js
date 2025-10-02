@@ -11,6 +11,10 @@ const settingsSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    email: {
+        type: String,
+        required: false
+    },
     address: {
         street: String,
         number: String,
@@ -22,7 +26,7 @@ const settingsSchema = new mongoose.Schema({
     },
 }, {
     // Esta opção garante que teremos apenas UM documento de configuração no banco
-    capped: { size: 1024, max: 1 } 
+    capped: { size: 1024, max: 1 }
 });
 
 // Aqui criamos a ferramenta (Model) que nos permite interagir com o banco de dados

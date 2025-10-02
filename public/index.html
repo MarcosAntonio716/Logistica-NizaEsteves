@@ -109,9 +109,10 @@
                         <a href="#" class="flex items-center" onclick="mostrarAba('dashboard-conteudo')">
                             <i class="fas fa-home w-6 mr-3"></i> Início
                         </a>
-                    </li>
                     <li class="p-4 hover:bg-white/10 cursor-pointer">
-                        <a href="#" class="flex items-center"><i class="fas fa-cogs w-6 mr-3"></i> Configurações</a>
+                        <a href="#" class="flex items-center" onclick="mostrarAba('configuracoes')">
+                            <i class="fas fa-cogs w-6 mr-3"></i> Configurações
+                        </a>
                     </li>
                     <li class="p-4 hover:bg-white/10 cursor-pointer">
                         <a href="#" class="flex items-center" onclick="mostrarAba('status-etiquetas')">
@@ -119,10 +120,14 @@
                         </a>
                     </li>
                     <li class="p-4 hover:bg-white/10 cursor-pointer">
-                        <a href="#" class="flex items-center"><i class="fas fa-users w-6 mr-3"></i> Clientes</a>
+                        <a href="#" class="flex items-center" onclick="mostrarAba('clientes')">
+                            <i class="fas fa-users w-6 mr-3"></i> Clientes
+                        </a>
                     </li>
                     <li class="p-4 hover:bg-white/10 cursor-pointer">
-                        <a href="#" class="flex items-center"><i class="fas fa-box-open w-6 mr-3"></i> Embalagens</a>
+                        <a href="#" class="flex items-center" onclick="mostrarAba('embalagens')">
+                            <i class="fas fa-box-open w-6 mr-3"></i> Embalagens
+                        </a>
                     </li>
                     <li class="p-4 hover:bg-white/10 cursor-pointer">
                         <a href="#" class="flex items-center"><i class="fas fa-truck w-6 mr-3"></i> Envios</a>
@@ -153,6 +158,73 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- ABA: Clientes (inicia oculta) -->
+                <div id="clientes" class="hidden">
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h2 class="text-2xl font-bold mb-4 text-gray-800">Clientes</h2>
+
+                        <!-- Barra de pesquisa -->
+                        <div class="mb-4 flex items-center gap-2">
+                            <input id="search-client" type="text" placeholder="Buscar por nome ou CPF/CNPJ..."
+                                class="w-full p-2 border rounded-md" />
+                            <button id="btn-search-client" class="btn-verde px-4 py-2 rounded-md">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+
+                        <!-- Lista de clientes -->
+                        <div id="lista-clientes" class="space-y-4">
+                            <p class="text-gray-500">Carregando clientes...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ABA: Embalagens (inicia oculta) -->
+                <div id="embalagens" class="hidden">
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h2 class="text-2xl font-bold mb-4 text-gray-800">Embalagens</h2>
+
+                        <!-- Lista de embalagens -->
+                        <div id="lista-embalagens" class="space-y-4">
+                            <p class="text-gray-500">Carregando embalagens...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ABA: Configurações (inicia oculta) -->
+                <div id="configuracoes" class="hidden">
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h2 class="text-2xl font-bold mb-4 text-gray-800">Configurações da Empresa</h2>
+
+                        <form id="form-settings" class="space-y-4">
+                            <input type="text" id="settings-company" placeholder="Nome da Empresa *"
+                                class="p-2 border rounded-md w-full" required />
+                            <input type="text" id="settings-cnpj" placeholder="CNPJ *"
+                                class="p-2 border rounded-md w-full" required />
+                            <input type="email" id="settings-email" placeholder="E-mail da empresa"
+                                class="p-2 border rounded-md w-full" />
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <input type="text" id="settings-cep" placeholder="CEP" class="p-2 border rounded-md" />
+                                <input type="text" id="settings-street" placeholder="Rua / Logradouro"
+                                    class="p-2 border rounded-md" />
+                                <input type="text" id="settings-number" placeholder="Número"
+                                    class="p-2 border rounded-md" />
+                                <input type="text" id="settings-bairro" placeholder="Bairro"
+                                    class="p-2 border rounded-md" />
+                                <input type="text" id="settings-city" placeholder="Cidade"
+                                    class="p-2 border rounded-md" />
+                                <input type="text" id="settings-state" placeholder="Estado (UF)"
+                                    class="p-2 border rounded-md" />
+                                <input type="text" id="settings-complement" placeholder="Complemento"
+                                    class="p-2 border rounded-md md:col-span-2" />
+                            </div>
+
+                            <button type="submit" class="btn-acento px-4 py-2 rounded-md">Salvar Configurações</button>
+                        </form>
+                    </div>
+                </div>
+
 
                 <!-- ABA: Dashboard principal (inicia visível) -->
                 <div id="dashboard-conteudo">
@@ -185,6 +257,12 @@
                                     <h4 class="font-semibold text-gray-600 mb-2">Cadastrar Novo Cliente</h4>
                                     <div id="novo-cliente-form-content" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <input type="text" id="new-client-name" placeholder="Nome Completo *"
+                                            class="p-2 border rounded-md md:col-span-2" />
+                                        <input type="text" id="new-client-cpf" placeholder="CPF ou CNPJ"
+                                            class="p-2 border rounded-md" />
+                                        <input type="text" id="new-client-phone" placeholder="Telefone"
+                                            class="p-2 border rounded-md" />
+                                        <input type="email" id="new-client-email" placeholder="E-mail"
                                             class="p-2 border rounded-md md:col-span-2" />
                                         <input type="text" id="new-client-cep" placeholder="CEP *"
                                             class="p-2 border rounded-md" maxlength="9" pattern="[0-9]{5}-?[0-9]{3}"
@@ -330,6 +408,75 @@
                 <button id="close-tracking-btn" class="text-2xl">&times;</button>
             </div>
             <div id="tracking-results" class="space-y-3 max-h-96 overflow-y-auto"></div>
+        </div>
+    </div>
+    <div id="client-edit-modal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-lg max-w-lg w-full p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-bold">Editar Cliente</h2>
+                <button type="button" id="close-edit-client-btn" class="text-2xl">&times;</button>
+            </div>
+            <form id="client-edit-form" class="space-y-3">
+                <input type="hidden" id="edit-client-id" />
+                <!-- campos -->
+                <input type="text" id="edit-client-name" placeholder="Nome completo *"
+                    class="p-2 border rounded-md w-full" required />
+                <input type="text" id="edit-client-cpf" placeholder="CPF ou CNPJ"
+                    class="p-2 border rounded-md w-full" />
+                <input type="text" id="edit-client-phone" placeholder="Telefone" class="p-2 border rounded-md w-full" />
+                <input type="email" id="edit-client-email" placeholder="E-mail" class="p-2 border rounded-md w-full" />
+                <input type="text" id="edit-client-cep" placeholder="CEP *" class="p-2 border rounded-md w-full"
+                    required />
+                <input type="text" id="edit-client-street" placeholder="Rua / Logradouro *"
+                    class="p-2 border rounded-md w-full" required />
+                <input type="text" id="edit-client-number" placeholder="Número *" class="p-2 border rounded-md w-full"
+                    required />
+                <input type="text" id="edit-client-bairro" placeholder="Bairro *" class="p-2 border rounded-md w-full"
+                    required />
+                <input type="text" id="edit-client-city" placeholder="Cidade *" class="p-2 border rounded-md w-full"
+                    required />
+                <input type="text" id="edit-client-state" placeholder="Estado (UF) *"
+                    class="p-2 border rounded-md w-full" required />
+                <input type="text" id="edit-client-complemento" placeholder="Complemento"
+                    class="p-2 border rounded-md w-full" />
+
+                <div class="flex justify-end gap-3 mt-4">
+                    <button type="button" id="cancel-edit-client-btn"
+                        class="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400">Cancelar</button>
+                    <button type="submit"
+                        class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Editar Embalagem -->
+    <div id="package-edit-modal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-lg max-w-lg w-full p-6">
+            <h2 class="text-lg font-bold mb-4">Editar Embalagem</h2>
+            <form id="package-edit-form" class="space-y-3">
+                <input type="hidden" id="edit-package-id" />
+
+                <input type="text" id="edit-package-name" placeholder="Nome *" class="p-2 border rounded-md w-full"
+                    required />
+                <input type="number" step="0.01" id="edit-package-weight" placeholder="Peso (kg) *"
+                    class="p-2 border rounded-md w-full" required />
+                <input type="number" id="edit-package-height" placeholder="Altura (cm) *"
+                    class="p-2 border rounded-md w-full" required />
+                <input type="number" id="edit-package-width" placeholder="Largura (cm) *"
+                    class="p-2 border rounded-md w-full" required />
+                <input type="number" id="edit-package-length" placeholder="Comprimento (cm) *"
+                    class="p-2 border rounded-md w-full" required />
+
+                <div class="flex justify-end gap-3 mt-4">
+                    <button type="button" id="cancel-edit-package-btn"
+                        class="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400">Cancelar</button>
+                    <button type="submit"
+                        class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">Salvar</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -526,12 +673,29 @@
                     const response = await fetch('/api/settings');
                     if (response.status === 200) {
                         const settings = await response.json();
-                        remetenteDiv.innerHTML = `<p><strong>${settings.companyName}</strong></p><p>${settings.address.street}, ${settings.address.number}</p><p>${settings.address.city} - ${settings.address.state}, ${settings.address.postalCode}</p>`;
+
+                        remetenteDiv.innerHTML = `
+                <p><strong>${settings.companyName}</strong></p>
+                <p>CNPJ: ${settings.cnpj || '-'}</p>
+                <p>E-mail: ${settings.email || '-'}</p>
+                <p>${settings.address.street || ''}, ${settings.address.number || ''}</p>
+                <p>
+                    ${settings.address.city || ''} - ${settings.address.state || ''}, 
+                    ${settings.address.postalCode || ''}
+                </p>
+            `;
+
+                        // mantém o CEP salvo no dataset para cálculo de frete
                         remetenteDiv.dataset.cepOrigem = settings.address.postalCode;
                     } else {
                         remetenteDiv.innerHTML = '<p class="text-red-500">Configure os dados do remetente.</p>';
                     }
-                } catch (err) { console.error('Erro ao buscar configurações:', err); }
+                } catch (err) {
+                    console.error('Erro ao buscar configurações:', err);
+                    remetenteDiv.innerHTML = '<p class="text-red-500">Não foi possível carregar as configurações.</p>';
+                }
+
+                // carrega também clientes e pacotes
                 await carregarClientes();
                 await carregarPacotes();
             }
@@ -576,15 +740,38 @@
                 let allFilled = true;
                 for (let input of inputs) { if (input.placeholder.includes('*') && input.value.trim() === '') { allFilled = false; break; } }
                 if (!allFilled) { showToast('Por favor, preencha todos os campos com *', 'error'); return; }
-                const newClientData = { fullName: document.getElementById('new-client-name').value, address: { postalCode: document.getElementById('new-client-cep').value, street: document.getElementById('new-client-rua').value, number: document.getElementById('new-client-numero').value, bairro: document.getElementById('new-client-bairro').value, city: document.getElementById('new-client-cidade').value, state: document.getElementById('new-client-estado').value, complement: document.getElementById('new-client-complemento').value } };
+                const newClientData = {
+                    fullName: document.getElementById('new-client-name').value,
+                    cpf_cnpj: document.getElementById('new-client-cpf').value || null,
+                    phone: document.getElementById('new-client-phone').value || null,
+                    address: {
+                        postalCode: document.getElementById('new-client-cep').value,
+                        street: document.getElementById('new-client-rua').value,
+                        number: document.getElementById('new-client-numero').value,
+                        bairro: document.getElementById('new-client-bairro').value,
+                        city: document.getElementById('new-client-cidade').value,
+                        state: document.getElementById('new-client-estado').value,
+                        complement: document.getElementById('new-client-complemento').value
+                    }
+                };
+
                 try {
-                    const response = await fetch('/api/clients', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(newClientData) });
+                    const response = await fetch('/api/clients', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(newClientData)
+                    });
+
                     if (!response.ok) throw new Error('Falha ao salvar cliente.');
                     await carregarClientes();
                     showToast('Cliente salvo com sucesso!', 'success');
                     novoClienteFormContent.querySelectorAll('input').forEach(i => i.value = '');
                     novoClienteFormContainer.classList.add('hidden');
-                } catch (err) { console.error('Erro ao salvar cliente:', err); showToast('Não foi possível salvar o cliente.', 'error'); }
+                } catch (err) {
+                    console.error('Erro ao salvar cliente:', err);
+                    showToast('Não foi possível salvar o cliente.', 'error');
+                }
+
             });
 
             saveNewPkgBtn.addEventListener('click', async () => {
@@ -640,12 +827,10 @@
 
             // FUNÇÃO DE TROCA DE ABAS (global)
             window.mostrarAba = function (abaId) {
-                // Esconde ambas seções controladas
-                ['dashboard-conteudo', 'status-etiquetas'].forEach(id => {
+                ['dashboard-conteudo', 'status-etiquetas', 'clientes', 'embalagens', 'configuracoes'].forEach(id => {
                     const el = document.getElementById(id);
                     if (el) el.classList.add('hidden');
                 });
-                // Mostra a seção solicitada
                 const alvo = document.getElementById(abaId);
                 if (alvo) alvo.classList.remove('hidden');
             };
@@ -656,6 +841,12 @@
 
     <!-- Script da aba de Status Etiquetas -->
     <script src="/js/status-etiquetas.js"></script>
+    <!-- Script da aba de Clientes -->
+    <script src="/js/clientes.js"></script>
+    <!-- Script da aba de Embalagens -->
+    <script src="/js/embalagens.js"></script>
+    <!-- Script da aba de Configurações -->
+    <script src="/js/configuracoes.js"></script>
 </body>
 
 </html>

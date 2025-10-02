@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
       const resp = await fetch('/api/shipments');
       if (!resp.ok) throw new Error('Falha ao buscar etiquetas');
-      const data = await resp.json(); // { items, total, page, limit, pages }
+      const data = await resp.json();
       const etiquetas = Array.isArray(data.items) ? data.items : [];
 
       if (etiquetas.length === 0) {
@@ -27,6 +27,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         const item = document.createElement('div');
         item.id = `ship-${etiqueta._id}`;
         item.className = 'p-4 border rounded-md shadow-sm bg-white flex justify-between items-center';
+
+        // 🔴 Botões extras só se for Melhor Envio
+        let botoesMelhorEnvio = '';
+        if (etiqueta.origem === "Melhor Envio") {
+          botoesMelhorEnvio = `
+            <div class="flex flex-col space-y-1 mt-2">
+              <button class="text-indigo-600 hover:underline text-sm btn-preview" data-id="${etiqueta.codigoRastreio}">Prévia</button>
+              <button class="text-green-600 hover:underline text-sm btn-pay" data-id="${etiqueta.codigoRastreio}">Pagar</button>
+              <button class="text-purple-600 hover:underline text-sm btn-print" data-id="${etiqueta.codigoRastreio}">Imprimir</button>
+            </div>
+          `;
+        }
 
         item.innerHTML = `
           <div>
@@ -50,34 +62,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
               <!-- Botão remover abre modal -->
               <button
-                class="text-red-600 hover:underline text-sm btn-remover"
+                class="text-red-600 hover:underline text-sm btn-remover-shipment"
                 data-id="${etiqueta._id}"
                 data-nome="${etiqueta.nomeCliente}">Remover</button>
             </div>
-          </div>
-
-          <!-- Modal de confirmação -->
-          <div id="modal-${etiqueta._id}" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div class="bg-white rounded-xl shadow-lg max-w-sm w-full p-6 text-center">
-              <div class="mb-4">
-                <i class="fas fa-exclamation-triangle text-red-500 text-4xl"></i>
-              </div>
-              <h2 class="text-lg font-bold mb-2">Remover Etiqueta</h2>
-              <p class="text-gray-600 mb-6">
-                Deseja remover a etiqueta de <strong>${etiqueta.nomeCliente}</strong>?<br>
-                Essa ação não pode ser desfeita.
-              </p>
-              <div class="flex justify-center gap-3">
-                <button onclick="closeDeleteModal('${etiqueta._id}')" 
-                        class="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400">
-                  Cancelar
-                </button>
-                <button onclick="confirmDelete('${etiqueta._id}')" 
-                        class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
-                  Remover
-                </button>
-              </div>
-            </div>
+            ${botoesMelhorEnvio}
           </div>
         `;
 
@@ -85,7 +74,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
 
       // listeners dos botões
-      statusList.addEventListener('click', (e) => {
+      statusList.addEventListener('click', async (e) => {
         const t = e.target;
 
         // rastrear
@@ -94,10 +83,36 @@ document.addEventListener('DOMContentLoaded', async () => {
           rastrear(codigo);
         }
 
-        // abrir modal de remover
-        if (t.classList.contains('btn-remover')) {
+        // remover
+        if (t.classList.contains('btn-remover-shipment')) {
           const id = t.getAttribute('data-id');
-          openDeleteModal(id);
+          openDeleteModalShipment(id);
+        }
+
+        // 🔴 Melhor Envio - Preview
+        if (t.classList.contains('btn-preview')) {
+          const id = t.dataset.id;
+          window.open(`/api/melhorenvio/labels/${id}/preview`, '_blank');
+        }
+
+        // 🔴 Melhor Envio - Pay
+        if (t.classList.contains('btn-pay')) {
+          const id = t.dataset.id;
+          try {
+            const resp = await fetch(`/api/melhorenvio/labels/${id}/pay`, { method: "POST" });
+            if (!resp.ok) throw new Error("Falha ao pagar");
+            showToast("Etiqueta paga com sucesso!", "success");
+            await carregar(); // recarrega lista
+          } catch (err) {
+            console.error(err);
+            showToast("Erro ao pagar etiqueta.", "error");
+          }
+        }
+
+        // 🔴 Melhor Envio - Print
+        if (t.classList.contains('btn-print')) {
+          const id = t.dataset.id;
+          window.open(`/api/melhorenvio/labels/${id}/print`, '_blank');
         }
       });
 
@@ -107,31 +122,31 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   };
 
-  // -------- Funções de modal --------
-  window.openDeleteModal = (id) => {
-    document.getElementById(`modal-${id}`).classList.remove('hidden');
+  // -------- Funções de modal (etiquetas) --------
+  window.openDeleteModalShipment = (id) => {
+    document.getElementById(`modal-shipment-${id}`).classList.remove('hidden');
   };
 
-  window.closeDeleteModal = (id) => {
-    document.getElementById(`modal-${id}`).classList.add('hidden');
+  window.closeDeleteModalShipment = (id) => {
+    document.getElementById(`modal-shipment-${id}`).classList.add('hidden');
   };
 
-  window.confirmDelete = async (id) => {
+  window.confirmDeleteShipment = async (id) => {
     try {
       const resp = await fetch(`/api/shipments/${id}`, { method: 'DELETE' });
-      if (!resp.ok && resp.status !== 204) throw new Error('Falha ao excluir etiqueta');
+      if (!resp.ok && resp.status !== 204 && resp.status !== 200) {
+        throw new Error(`Falha ao excluir etiqueta (${resp.status})`);
+      }
+      closeDeleteModalShipment(id);
       document.getElementById(`ship-${id}`)?.remove();
-
       if (!statusList.children.length) {
         statusList.innerHTML = '<p class="text-gray-500">Nenhuma etiqueta encontrada.</p>';
       }
-
       showToast('Etiqueta removida com sucesso!', 'success');
     } catch (err) {
       console.error(err);
       showToast('Erro ao excluir a etiqueta.', 'error');
     }
-    closeDeleteModal(id);
   };
 
   // -------- Função rastrear --------

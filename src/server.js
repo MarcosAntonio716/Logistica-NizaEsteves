@@ -10,6 +10,7 @@ const clientRoutes = require('./routes/clientRoutes');
 const packageRoutes = require('./routes/packageRoutes');
 const trackingRoutes = require('./routes/trackingRoutes');
 const shipmentRoutes = require('./routes/shipmentRoutes');
+const melhorEnvioRoutes = require('./routes/melhorEnvioRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -24,7 +25,8 @@ app.use('/api', settingsRoutes);
 app.use('/api', clientRoutes);
 app.use('/api', packageRoutes);
 app.use('/api', trackingRoutes);
-app.use('/api/shipments', shipmentRoutes)
+app.use('/api/shipments', shipmentRoutes);
+app.use('/api/melhorenvio', melhorEnvioRoutes);
 
 // --- LÓGICA DE CONEXÃO COM O BANCO DE DADOS ---
 console.log('Tentando conectar ao MongoDB...');
